@@ -1,0 +1,44 @@
+import mysql.connector as msql
+from tabulate import tabulate
+
+def roomsavailable():
+    cn = msql.connect(host='localhost', user='root', password='1234', database='hotel')
+    mycursor = cn.cursor()
+
+    print("WELCOME".center(60, "-"))
+    print("ROOMS AVAILABLE".center(60, "-"))
+
+    room_types = [
+        [1, "STANDARD"],
+        [2, "GOLDEN"],
+        [3, "SILVER"]
+    ]
+
+    for room in room_types:
+        print(f"{room[0]}. {room[1]} SUITE")
+
+    opt = int(input('Please enter your preferred suite number: '))
+
+    if opt == 1:
+        q = "SELECT * FROM rooms WHERE room_type='STANDARD' AND status='Vacant'"
+    elif opt == 2:
+        q = "SELECT * FROM rooms WHERE room_type='GOLDEN' AND status='Vacant'"
+    elif opt == 3:
+        q = "SELECT * FROM rooms WHERE room_type='SILVER' AND status='Vacant'"
+    else:
+        print("Invalid option.")
+        mycursor.close()
+        cn.close()
+        return
+
+    mycursor.execute(q)
+    results = mycursor.fetchall()
+
+    if results:
+        headers = ["Room No", "Room Type", "Status", "Cost"]
+        print(tabulate(results, headers, tablefmt="simple"))
+    else:
+        print("No vacant rooms available in this suite.")
+
+    mycursor.close()
+    cn.close()
