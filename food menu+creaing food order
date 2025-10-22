@@ -1,0 +1,24 @@
+mycursor.execute("""create table if not exists menu(item_id int auto_increment primary key,item_name varchar(50),price float)""")
+mycursor.execute("""create table if not exists food_orders(room_no int,item_id int,quantity int)""")
+items=[
+    ("Butter Chicken",350),
+    ("Veg Pulav",320),
+    ("Garlic Naan",45),
+    ("Butter Naan",45),
+    ("Tandoori Chicken",350),
+    ("Pasta Alfredo",200),
+    ("Ceaser Salad",320),
+    ("Gulab Jamun",190),
+    ("Nargis Kofta",320),
+    ("Masala Tea",120),
+    ("kashmiri Tea",120),
+    ("Coffee",100),
+    ("Choco Lava Cake",299),
+    ("Veg Biriyani",310),
+    ("Chicken Biriiyani",340),
+    ("Grilled Chicken",700)
+    ]
+query="insert into menu(item_name,price) values (%s,%s)"
+mycursor.executemany(query,items)
+
+cn.commit()
