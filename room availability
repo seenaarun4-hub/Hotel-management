@@ -16,8 +16,12 @@ def roomsavailable():
 
     for room in room_types:
         print(f"{room[0]}. {room[1]} SUITE")
-
-    opt = int(input('Please enter your preferred suite number: '))
+while True:
+    try:
+        opt = int(input('Please enter your preferred suite number: '))
+    except ValueError:
+        print("Invalid option")
+        continue
 
     if opt == 1:
         q = "SELECT * FROM rooms WHERE room_type='STANDARD' AND status='Vacant'"
@@ -25,8 +29,8 @@ def roomsavailable():
         q = "SELECT * FROM rooms WHERE room_type='GOLDEN' AND status='Vacant'"
     elif opt == 3:
         q = "SELECT * FROM rooms WHERE room_type='SILVER' AND status='Vacant'"
-    else:
-        print("Invalid option.")
+   else:
+        print("Invalid option. Select another suite")
         mycursor.close()
         cn.close()
         return
