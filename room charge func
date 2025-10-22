@@ -1,0 +1,12 @@
+def room_charge():
+    roomno=int(input('enter room no:'))
+    query="select cost,no_of_days from room_type where roomno=%s"
+    mycursor.execute(query,(roomno,))
+    result=mycursor.fetchone()
+    if result:
+        cost_per_day=result[0]
+        days=result[1]
+        total=cost_per_day*days
+        return total
+    else:
+        print("Room not found")
