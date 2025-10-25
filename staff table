@@ -1,0 +1,29 @@
+import mysql.connector as msql
+cn=msql.connect(host='localhost',user='root',password='1234',database='le_meridien')
+mycursor=cn.cursor()
+mycursor.execute("""
+CREATE TABLE IF NOT EXISTS staff(
+             staffid int auto_increment primary key,
+             name varchar(20),
+             designation varchar(20),
+             mobile_no varchar(15),
+             salary int,
+             date_of_joining DATE)""")
+
+mycursor.execute("INSERT INTO staff VALUES(2943, 'Minha', 'Receptionist', '7529710247', 15000, '2017-05-12')")
+mycursor.execute("INSERT InTO staff VALUES(2944, 'Tom', 'Front office staff', '3229765947', 14000, '2018-06-24')")
+mycursor.execute("INSERT INTO staff VALUES(2945, 'Shenali', 'Room Attendant', '7272659471', 13000, '2020-11-05')")
+mycursor.execute("INSERT INTO staff VALUES(2946, 'Watson', 'Front office staff', '8528762948', 13000, '2021-06-22')")
+mycursor.execute("INSERT INTO staff VALUES(2947, 'Emma', 'Restaurant Manager', '7627425568', 14000, '2022-12-11')")
+mycursor.execute("INSERT INTO staff VALUES(2948, 'Krish', 'Accountant', '8258781948', 16000, '2020-01-15')")
+mycursor.execute("INSERT INTO staff VALUES(2949, 'Carmelin', 'Front office staff', '9618791948', 14000, '2012-06-17')")
+mycursor.execute("INSERT INTO staff VALUES(2950, 'Rishi', 'Accountant', '6808196293', 16000, '2019-04-18')")
+mycursor.execute("INSERT INTO staff VALUES(2951, 'Sanya', 'HR Manager', '8254881998', 15000, '2019-05-17')")
+mycursor.execute("INSERT INTO staff VALUES(2952, 'Karan', 'HR Executive', '8274281963', 13000, '2012-03-16')")
+mycursor.execute("INSERT INTO staff VALUES(2953, 'Amar', 'Accountant', '8852981962', 16000, '2017-06-19')")
+mycursor.execute("INSERT INTO staff VALUES(2954, 'Preeti', 'Manager', '8396281997', 15000, '2020-04-20')")
+mycursor.execute("INSERT INTO staff VALUES(2955, 'Aisha', 'Head Chef', '8972981028', 17000, '2021-12-25')")
+mycursor.execute("INSERT INTO staff VALUES(2956, 'Aman', 'Accountant', '8302981962', 15000, '2020-04-19')")
+mycursor.execute("INSERT INTO staff VALUES(2957, 'Rohit', 'Chief Engineer', '9087581962', 16000, '2022-04-20')")
+cn.commit()
+
