@@ -1,0 +1,421 @@
+import mysql.connector as msql
+from tabulate import tabulate
+from datetime import date
+cn=msql.connect(host='localhost',user='root',password='1234',database='le_meridien')
+mycursor=cn.cursor()
+#create table rooms
+mycursor.execute('''
+create table rooms (
+    room_no varchar(10),
+    room_type varchar(20),
+    status varchar(10),
+    cost INT
+)
+''')
+query= "INSERT INTO rooms (room_no, room_type, status, cost) VALUES (%s, %s, %s, %s)"
+values = [
+    ("D401","Diamond","Taken",15000),
+    ("D402","Diamond","Taken",15000),
+    ("D403","Diamond","Vacant",15000),
+    ("D404","Diamond","Vacant",15000),
+    ("D405","Diamond","Taken",15000),
+    ("D406","Diamond","Vacant",15000),
+    ("G301","Gold","Taken",12000),
+    ("G302","Gold","Vacant",12000),
+    ("G303","Gold","Vacant",12000),
+    ("G304","Gold","Taken",12000),
+    ("G305","Gold","Vacant",12000),
+    ("G306","Gold","Taken",12000),
+    ("S201","Silver","Taken",9000),
+    ("S202","Silver","Taken",9000),
+    ("S203","Silver","Vacant",9000),
+    ("S204","Silver","Vacant",9000),
+    ("S205","Silver","Taken",9000),
+    ("S206","Silver","Taken",9000),
+    ("L101","Deluxe","Taken",7000),
+    ("L102","Deluxe","Vacant",7000),
+    ("L103","Deluxe","Vacant",7000),
+    ("L104","Deluxe","Taken",7000),
+    ("L105","Deluxe","Taken",7000),
+    ("L106","Deluxe","Taken",7000),
+]
+
+mycursor.executemany(query, values)
+def Add_Staff():
+    n=int(input('Enter the no of staff to be Entered'))
+    for i in range(n):
+        staffid=int(input('Enter the Staff id:'))
+        name=input('Enter the Name:')
+        designation=input('Enter the Designation')
+        mobile_no=int(input('Enter the Mobile number'))
+        salary=int(input('Enter the Salary'))
+        yy=int(input('Enter the year'))
+        mm=int(input('Enter the month'))
+        dd=int(input('Enter the date'))
+        query="insert into details values({},'{}','{}',{},{},'{}')".format(staffid,name,designation,mobile_no,salary,date(yy,mm,dd))
+        mycursor.execute(query)
+        cn.commit()
+    mycursor.execute("SELECT * FROM details")
+    data = mycursor.fetchall()
+    headers = ["Staff_ID", "Name", "Designation", "Mobile_No", "Salary", "Join_Date"]
+    print(tabulate(data, headers, tablefmt="simple"))
+
+def search_staff():
+    while True:
+        print('''1. search by id
+              2. search by designation
+              3. view all staff
+              4. exit''')
+        search_opt = int(input('enter choice: '))
+        
+        if search_opt == 1:
+            id_search = input('enter id to be searched: ')
+            mycursor.execute("select * from staff where csid='{}'".format(id_search))  
+        
+        elif search_opt == 2:
+            desig_search = input('enter designation to be searched: ')
+            mycursor.execute("select * from staff where designation='{}'".format(desig_search))
+        
+        elif search_opt == 3:
+            mycursor.execute("select * from staff")
+        
+        elif search_opt == 4:
+            print("Exiting search menu...")
+            break
+        
+        else:
+            print('Invalid choice, please try again.')
+            continue
+          data = mycursor.fetchall()
+        if data:
+            for k in data:
+                print(k)
+        else:
+            print("No matching records found.")
+def update_name():
+    try:
+        staffid=int(input('Enter the staff id:'))
+    except ValueError:
+        print("Invalid staff ID. Must be a number.")
+        print('----------------------------------')
+        return
+    print()
+    mycursor.execute("select * from staff where staffid='{}'".format(staffid))
+    result=mycursor.fetchall()
+    if result:
+        print('--------STAFF DETAILS--------')
+        for data in result:
+            print("Staff ID:",data[0])
+            print("Name:",data[1])
+            print("Designation:",data[2])
+            print("Mobile No:",data[3])
+            print("Salary:",data[4])
+            print("Date of Joining:",data[5])
+        print('----------------------------------')
+        print()
+        newname=input("Enter new staff name:")
+        mycursor.execute("update staff set name='{}' where staffid='{}'".format(newname,staffid))
+        cn.commit()
+        print("Staff name updated successfully")
+    else:
+        print("No staff found with that ID.")
+        print('----------------------------------')
+        print()
+def update_designation():
+    try:
+        staffid=int(input('Enter the staff Id:'))
+    except ValueError:
+        print("Invalid staff ID. Must be a number.")
+        print('----------------------------------')
+        return
+    print()
+    mycursor.execute("select * from staff where staffid='{}'".format(staffid))
+    result=mycursor.fetchall()
+    if result:
+        print('--------STAFF DETAILS--------')
+        for data in result:
+            print("Staff ID:",data[0])
+            print("Name:",data[1])
+            print("Designation:",data[2])
+            print("Mobile No:",data[3])
+            print("Salary:",data[4])
+            print("Date of Joining:",data[5])
+        print('--------------------------------')
+        newdesig=input("Enter new designation:")
+        mycursor.execute("update staff set designation='{}' where staffid='{}'".format(newdesig,staffid))
+        cn.commit()
+        print("Staff designation updated successfully")
+    else:
+        print("No staff found with that ID.")
+        print('----------------------------------')
+        print()
+
+def update_salary():
+    try:
+        staffid=int(input('Enter the staff Id:'))
+    except ValueError:
+        print("Invalid staff ID. Must be a number.")
+        print('----------------------------------')
+        return
+    print()
+    mycursor.execute("select * from staff where staffid='{}'".format(staffid))
+    result=mycursor.fetchall()
+    if result:
+        print('--------STAFF DETAILS--------')
+        for data in result:
+            print("Staff ID:",data[0])
+            print("Name:",data[1])
+            print("Designation:",data[2])
+            print("Mobile No:",data[3])
+            print("Salary:",data[4])
+            print("Date of Joining:",data[5])
+        print('--------------------------------')
+        try:
+            newsalary=int(input("Enter new salary:"))
+        except ValueError:
+            print("Invalid salary. Must be a number.")
+            print('----------------------------------')
+            return
+        mycursor.execute("update staff set salary={} where staffid='{}'".format(newsalary,staffid))
+        cn.commit()
+        print("Staff salary updated successfully")
+    else:
+        print("No staff found with that ID.")
+        print('----------------------------------')
+        print()
+
+def delete_staff():
+    try:
+        staff_id = int(input("Enter the staff ID to delete: "))
+        mycursor.execute("SELECT * FROM staff WHERE staff_id = %s", (staff_id,))
+        record = mycursor.fetchone()
+
+        if record:
+            mycursor.execute("DELETE FROM staff WHERE staff_id = %s", (staff_id,))
+            connection.commit()
+            print("Staff deleted successfully.")
+        else:
+            print("No staff found with that ID.")
+
+    except ValueError:
+        print("Please enter a number for staff ID.")
+def staff_fun():
+    while True:
+        print(''' 
+        1. Add staff
+        2. Search staff
+        3. Update staff
+        4. Remove staff
+        5. Exit
+        ''')
+
+        opt = int(input('Enter choice: '))
+
+        if opt == 1:
+            Add_staff()
+
+        elif opt == 2:
+            search_staff()
+
+        elif opt == 3:
+            opt = input("Choose value to be updated:\n1. Name\n2. Designation\n3. Salary\n").strip().lower()
+
+            if opt == "1" or opt == "name":
+                update_name()
+            elif opt == "2" or opt == "designation":
+                update_designation()
+            elif opt == "3" or opt == "salary":
+                update_salary()
+            else:
+                print("Enter the correct option.")
+
+        elif opt == 4:
+            delete_staff()
+
+        elif opt == 5:
+            print("Exiting staff menu...")
+            break
+
+        else:
+            print("Invalid option. Try again.")
+
+def rooms_available():
+    print("ROOMS AVAILABLE".center(60, "-"))
+
+    room_types = [
+        [1, "DIAMOND"],
+        [2, "GOLD"],
+        [3, "SILVER"],
+        [4, "DELUXE"]
+    ]
+
+    for room in room_types:
+        print(f"{room[0]}. {room[1]} SUITE")
+    while True:
+       try:
+          opt = int(input('Please enter your preferred suite number: '))
+       except ValueError:
+          print("Invalid option")
+          continue
+
+       if opt == 1:
+          q = "SELECT * FROM rooms WHERE room_type='DIAMOND' AND status='Vacant'"
+       elif opt == 2:
+          q = "SELECT * FROM rooms WHERE room_type='GOLD' AND status='Vacant'"
+       elif opt == 3:
+          q = "SELECT * FROM rooms WHERE room_type='SILVER' AND status='Vacant'"
+       elif opt == 4:
+          q = "SELECT * FROM rooms WHERE room_type='DELUXE' AND status='Vacant'"
+       else:
+          print("Invalid option. Select another suite")
+          continue
+        
+
+    mycursor.execute(q)
+    results = mycursor.fetchall() 
+query="update rooms set status='booked' where roomno=".format(roomno)
+
+    if results:
+        headers = ["Room No", "Room Type", "Status", "Cost"]
+        print(tabulate(results, headers, tablefmt="simple"))
+    else:
+        print("No vacant rooms available in this suite.")
+   break
+def selectroom():
+    rooms_available()
+    selected_room = input('Enter selected room: ')
+    floor_costs = {
+        'D': 15000,   # Diamond
+        'G': 12000,   # Gold
+        'S': 9000,   # Silver
+        'X': 7000    # Deluxe 
+    }
+    letter = selected_room[0]
+    if letter in floor_costs:
+        roomcost = floor_costs[letter]
+    else:
+        print('Invalid room no, please select again:')
+        return selectroom()
+    return selected_room, roomcost 
+def checkin():
+    cursor.execute("SELECT MAX(csid) FROM guest")
+    result = cursor.fetchone()
+    if result[0] is None:
+        guest_id = 101       # start numbering from 101
+    else:
+        guest_id = result[0] + 1
+    name = input('Enter name: ')
+    check_date = input("Enter your joining date (YYYY-MM-DD): ")
+    mobile_no = input('Enter mobile no: ')
+    
+    
+    guest_info=[csid,name,check_date,mobile_no,room no,no_of_days]
+    sql = "INSERT INTO guest (csid, name, check_date, mobile_no, no_of_days, roomcharge, room_no) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    mycursor.execute(sql, guest_info)
+mycursor.execute("""create table if not exists menu(item_id int auto_increment primary key,item_name varchar(50),price float)""")
+mycursor.execute("""create table if not exists food_orders(room_no int,item_id int,quantity int)""")
+items=[
+    ("Butter Chicken",350),
+    ("Veg Pulav",320),
+    ("Garlic Naan",45),
+    ("Butter Naan",45),
+    ("Tandoori Chicken",350),
+    ("Pasta Alfredo",200),
+    ("Ceaser Salad",320),
+    ("Gulab Jamun",190),
+    ("Nargis Kofta",320),
+    ("Masala Tea",120),
+    ("kashmiri Tea",120),
+    ("Coffee",100),
+    ("Choco Lava Cake",299),
+    ("Veg Biriyani",310),
+    ("Chicken Biriiyani",340),
+    ("Grilled Chicken",700)
+    ]
+query="insert into menu(item_name,price) values (%s,%s)"
+mycursor.executemany(query,items)
+def room_charge():
+    roomno = int(input('Enter room no: '))
+    query = "SELECT cost, no_of_days FROM room_type WHERE roomno = %s"
+    mycursor.execute(query, (roomno,))
+    result = mycursor.fetchone()
+    
+    if result:
+        cost_per_day = result[0]
+        days = result[1]
+        total = cost_per_day * days
+        return total
+    else:
+        print("Room not found")
+def food_charge():
+    try:
+        room_number = int(input("Enter the room number: "))
+        mycursor.execute("select item_id, quantity from food_orders where room_no = %s", (room_number,))
+        orders = mycursor.fetchall()
+
+        if not orders:
+            print("No food orders found for this room.")
+            return 0
+
+        total = 0
+        for order in orders:
+            item_id = order[0]
+            quantity = order[1]
+            mycursor.execute("select price from menu where item_id = %s", (item_id,))
+            price = mycursor.fetchone()[0]
+            total += price * quantity
+
+        print(f"Total food charges for room {room_number} are ₹{total}")
+        return total
+
+def billing():
+    rsum=room_charge()
+    fsum=food_charge()
+    total=rsum+fsum
+    print("\n------ Bill ------")
+    print(f"Charge for the stay: ₹{rsum}")
+    print(f"Charge for the food: ₹{fsum}")
+    print(f"Total amount to pay: ₹{total}")
+    print("------------------------\n")
+   
+
+def check_out():
+    mycursor.execute("""
+        UPDATE rooms r
+        JOIN guestinfo g ON r.room_no = g.room_no
+        SET r.status = 'available'
+        WHERE DATE_ADD(g.check_date, INTERVAL g.no_of_days DAY) <= CURDATE()
+    """) # check rooms table name
+    cn.commit()
+    print("Room statuses updated automatically.")
+
+def guest_menu():
+  txt="Welcome to Le Meridien"
+  print(txt.center(60))
+  print("1. Book a room")
+  print("2. Check out")
+  print("3. Exit")
+while True:
+  guest_menu()
+  opt=input('Enter your choice:').strip().lower()
+  if opt=="1" or opt=="book a room":
+    print("Booking a Room...")
+    checkin()
+  elif opt=="2" or opt=="check out":
+    print("Checking out...")
+    pass
+  elif opt=="3" or opt=="exit":
+    cn.close()
+    break
+  else:
+    print("Invalid Choice")
+def guest_staff():
+   choice=input("Please select your Login Type:\n"
+   "1. Guest\n"
+   "2. Staff\n").strip().lower()
+   if choice=="1" or choice=="guest":
+     guest_menu()
+   elif choice=="2" or choice=="staff":
+     staff_fun()
+   
+
